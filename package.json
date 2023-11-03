@@ -1,6 +1,6 @@
 {
-  "name": "logging-ts",
-  "version": "1.0.0",
+  "name": "@mischareitsma/logging-ts",
+  "version": "0.1.0",
   "description": "TypeScript Logging Capabilities",
   "main": "out/index.js",
   "types": "out/index.d.ts",
