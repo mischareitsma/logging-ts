@@ -41,9 +41,10 @@ export class LogLevel {
 	}
 }
 
-const allLogLevels: LogLevel[] = [
+export const allLogLevels: LogLevel[] = [
 	LogLevel.TRACE, LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR, LogLevel.FATAL
 ];
+
 
 /**
  * Events for the different log levels defined in the **LogLevel** enum.
@@ -148,6 +149,9 @@ export interface Logger {
 	setName(name: string): void;
 	getName(): string;
 
+	getNumberOfHandlers(): number;
+	getNumberOfHandlersForLevel(level: LogLevel): number;
+
 	/**
 	 * Add a log handler to a logger instance.
 	 * 
@@ -222,13 +226,17 @@ interface LogEventListener {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class Logger extends EventEmitter {
 
-	private name: string;
+	private name: string = "";
 	private handlers: Map<string, LogHandler> = new Map();
 	private handlerListeners: Map<string, LogEventListener[]> = new Map();
 
+	private numberOfHandlers: number = 0;
+	private numberOfHandlersPerLevel: [number, number, number, number, number, number] =
+		[0, 0, 0 ,0 ,0 ,0];
+
 	public constructor(name?: string) {
 		super();
-		this.setName(name);
+		if (name) this.setName(name);
 	}
 
 	public setName(name: string) {
@@ -237,6 +245,14 @@ export class Logger extends EventEmitter {
 
 	public getName(): string {
 		return this.name;
+	}
+
+	public getNumberOfHandlers(): number {
+		return this.numberOfHandlers;
+	}
+
+	public getNumberOfHandlersForLevel(level: LogLevel): number {
+		return this.numberOfHandlersPerLevel[level.valueOf()];
 	}
 
 	public addLogHandler(handler: LogHandler) {
@@ -248,13 +264,17 @@ export class Logger extends EventEmitter {
 		this.handlers.set(handler.name, handler);
 		this.handlerListeners.set(handler.name, []);
 
+		this.numberOfHandlers++;
+
 		allLogLevels.forEach((level: LogLevel) => {
-			if (handler.logLevel <= level)
-				this.addLogListener(handler, "logTrace", level);
+			if (handler.logLevel <= level) {
+				this.addLogListener(handler, level.eventName, level);
+				this.numberOfHandlersPerLevel[level.valueOf()]++;
+			}
 		});
 	}
 
-	public addLogListener(handler: LogHandler, event: keyof LogEvents, level: LogLevel) {
+	private addLogListener(handler: LogHandler, event: keyof LogEvents, level: LogLevel) {
 		const handlerFunction: LogFunction = (msg, date, name, data) => {
 			handler.log({
 				level: level,
@@ -271,18 +291,30 @@ export class Logger extends EventEmitter {
 		this.on(event, handlerFunction);
 	}
 
-	removeLogHandler(name: string): void {
+	public removeLogHandler(handlerOrName: string | LogHandler): void {
+		const [name, handler]: [string, LogHandler] = typeof handlerOrName === "string" ?
+			[handlerOrName, this.handlers.get(handlerOrName)] :
+			[handlerOrName.name, handlerOrName];
+
+		this.numberOfHandlers--;
+		allLogLevels.filter(level => level >= handler.logLevel).forEach((level) => {
+			this.numberOfHandlersPerLevel[level.valueOf()]--;
+		});
+
 		this.handlerListeners.get(name).forEach((logEventListener: LogEventListener) => {
 			this.removeListener(
 				logEventListener.eventName,
 				logEventListener.logFunction
 			);
 		});
+
+		this.handlers.delete(name);
+		this.handlerListeners.delete(name);
 	}
 
-	removeAllLogHandlers(): void {
+	public removeAllLogHandlers(): void {
 		this.handlers.forEach((logHandler: LogHandler) => {
-			this.removeLogHandler(logHandler.name);
+			this.removeLogHandler(logHandler);
 		});
 	}
 
