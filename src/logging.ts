@@ -173,7 +173,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	trace(message: string, data: LogDataContainer): void;
+	trace(message: string, data?: LogDataContainer): void;
 
 	/**
 	 * Trigger a debug event.
@@ -181,7 +181,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	debug(message: string, data: LogDataContainer): void;
+	debug(message: string, data?: LogDataContainer): void;
 
 	/**
 	 * Trigger a info event.
@@ -189,7 +189,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	info(message: string, data: LogDataContainer): void;
+	info(message: string, data?: LogDataContainer): void;
 
 	/**
 	 * Trigger a warn event.
@@ -197,7 +197,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	warn(message: string, data: LogDataContainer): void;
+	warn(message: string, data?: LogDataContainer): void;
 
 	/**
 	 * Trigger a error event.
@@ -205,7 +205,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	error(message: string, data: LogDataContainer): void;
+	error(message: string, data?: LogDataContainer): void;
 
 	/**
 	 * Trigger a fatal event.
@@ -213,7 +213,7 @@ export interface Logger {
 	 * @param message Message to log.
 	 * @param data Optional data used for logging.
 	 */
-	fatal(message: string, data: LogDataContainer): void;
+	fatal(message: string, data?: LogDataContainer): void;
 }
 
 type LogFunction = (msg: string, date: Date, name: string, data: LogDataContainer) => void;
@@ -318,27 +318,27 @@ export class Logger extends EventEmitter {
 		});
 	}
 
-	public trace(message: string, data?: { [id: string]: string; }): void {
+	public trace(message: string, data?: LogDataContainer): void {
 		this.emit("logTrace", message, new Date(), this.getName(), data);
 	}
 
-	public debug(message: string, data?: { [id: string]: string; }): void {
+	public debug(message: string, data?: LogDataContainer): void {
 		this.emit("logDebug", message, new Date(), this.getName(), data);
 	}
 
-	public info(message: string, data?: { [id: string]: string; }): void {
+	public info(message: string, data?: LogDataContainer): void {
 		this.emit("logInfo", message, new Date(), this.getName(), data);
 	}
 
-	public warn(message: string, data?: { [id: string]: string; }): void {
+	public warn(message: string, data?: LogDataContainer): void {
 		this.emit("logWarn", message, new Date(), this.getName(), data);
 	}
 
-	public error(message: string, data?: { [id: string]: string; }): void {
+	public error(message: string, data?: LogDataContainer): void {
 		this.emit("logError", message, new Date(), this.getName(), data);
 	}
 
-	public fatal(message: string, data?: { [id: string]: string; }): void {
+	public fatal(message: string, data?: LogDataContainer): void {
 		this.emit("logFatal", message, new Date(), this.getName(), data);
 	}
 }

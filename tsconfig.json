@@ -25,5 +25,6 @@
 		"out",
 		"tmp",
 		"jest.config.ts",
+		"build.js",
 	],
 }

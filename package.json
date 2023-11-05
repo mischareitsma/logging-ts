@@ -1,7 +1,7 @@
 {
-  "name": "@mischareitsma/logging-ts",
+  "name": "@mischareitsma/logging",
   "version": "0.1.0",
-  "description": "TypeScript Logging Capabilities",
+  "description": "EventEmitter based logging module",
   "main": "out/index.js",
   "types": "out/index.d.ts",
   "scripts": {
@@ -9,8 +9,11 @@
     "compile": "tsc -p tsconfig.json",
     "dist": "tsc -p tsconfig.build.json && cp package.json dist/",
     "lint": "npx eslint .",
-    "build": "npm run clean && npm run lint && npm run compile && npm run test && npm run dist",
-    "test": "jest"
+    "build": "npm run clean && npm run lint && npm run compile && npm run test && npm run dist && npm run generate-package-json",
+    "generate-package-json": "node ./build.js",
+    "test": "jest",
+    "build-and-release": "npm run build && npm run release",
+    "release": "npm publish --access public dist/"
   },
   "author": "Mischa Reitsma",
   "license": "ISC",

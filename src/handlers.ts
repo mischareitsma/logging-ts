@@ -42,7 +42,7 @@ export class ConsoleHandler implements LogHandler {
 			case LogLevel.DEBUG:
 				return ansi.ANSI_FG_GREEN;
 			case LogLevel.INFO:
-				return ansi.ANSI_BG_BLUE;
+				return ansi.ANSI_FG_BLUE;
 			case LogLevel.WARN:
 				return ansi.ANSI_FG_YELLOW;
 			case LogLevel.ERROR:
