@@ -25,6 +25,6 @@
 		"out",
 		"tmp",
 		"jest.config.ts",
-		"build.js",
+		"build-package-json.js",
 	],
 }

@@ -16,7 +16,7 @@ module.exports = {
 		"**/out/**",
 		"**/dist/**",
 		"**/node_modules/**",
-		"build.js"
+		"build-package-json.js"
 	],
 	"plugins": [
 		"@typescript-eslint"

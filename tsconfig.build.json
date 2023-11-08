@@ -12,6 +12,6 @@
 		"tmp",
 		"jest.config.ts",
 		"__test__",
-		"build.js"
+		"build-package-json.js"
 	],
 }
