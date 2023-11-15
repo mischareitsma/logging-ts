@@ -23,8 +23,10 @@
 	"exclude": [
 		"node_modules",
 		"out",
+		"dist",
 		"tmp",
 		"jest.config.ts",
 		"build-package-json.js",
+
 	],
 }

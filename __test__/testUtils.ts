@@ -15,13 +15,3 @@ export class TestLoggingHandler implements LogHandler {
 		this.logEvents.push(logEvent);
 	}
 }
-
-/**
- * Sleep for a number of milliseconds.
- * 
- * @param ms Number of milliseconds to sleep. Default: 1000ms. If <= 0, doesn't sleep.
- */
-export async function sleep(ms: number = 1000): Promise<void> {
-	if (ms <= 0) return;
-	await new Promise(f => setTimeout(f, ms));
-}

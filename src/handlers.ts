@@ -1,6 +1,9 @@
-import { LogEvent, LogHandler, LogLevel } from "./logging";
-import * as ansi from "./ansi";
 import * as fs from "node:fs";
+
+import * as ansi from "./ansi";
+
+import { LogEvent, LogHandler, LogLevel } from "./logging";
+import { HandlerConfiguration } from "./config";
 
 export class ConsoleHandler implements LogHandler {
 
@@ -77,4 +80,21 @@ export class FileHandler implements LogHandler {
 		);
 	}
 	
+}
+
+export function getNewLogHandler(handlerOptions: HandlerConfiguration): LogHandler {
+	switch (handlerOptions.type) {
+		case "FileHandler":
+			return new FileHandler(
+				handlerOptions.logLevel,
+				handlerOptions.logFile,
+				handlerOptions.name
+			);
+		case "ConsoleHandler":
+			return new ConsoleHandler(
+				handlerOptions.logLevel,
+				handlerOptions.useColors,
+				handlerOptions.name
+			);
+	}
 }

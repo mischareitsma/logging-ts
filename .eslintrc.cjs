@@ -41,7 +41,7 @@ module.exports = {
 			{
 				"code": 100,
 				"tabWidth": 8,
-				"ignorePattern": "^\\s*// (TODO|FIXME):.*$",
+				"ignorePattern": "^\\s*// (TODO|FIXME|eslint-).*$",
 			},
 		],
 	},

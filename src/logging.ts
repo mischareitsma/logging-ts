@@ -356,6 +356,10 @@ export interface LogHandler {
 	 * equal to or greater than this value will be processed by this handler.
 	 */
 	logLevel: LogLevel;
+
+	/**
+	 * Name of the log handler.
+	 */
 	readonly name: string;
 
 	/**
@@ -365,7 +369,7 @@ export interface LogHandler {
 	 * 
 	 * @param logEvent Event to log.
 	 */
-	log(logEven: LogEvent): void;
+	log(logEvent: LogEvent): void;
 }
 
 /* Section: Logger maintenance.
