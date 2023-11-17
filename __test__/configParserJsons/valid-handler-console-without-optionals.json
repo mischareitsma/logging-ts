@@ -1,0 +1,8 @@
+{
+	"handlers": {
+		"consoleHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "INFO"
+		}
+	}
+}

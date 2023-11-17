@@ -1,0 +1,9 @@
+{
+	"handlers": {
+		"console": {
+			"type": "ConsoleHandler",
+			"useColors": "thisIsTrue!",
+			"logLevel": "INFO"
+		}
+	}
+}

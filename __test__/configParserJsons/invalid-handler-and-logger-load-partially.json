@@ -1,0 +1,19 @@
+{
+	"loggers": {
+		"root": {
+			"handlers": ["validHandler"]
+		},
+		"invalidLogger": {
+			"handlers": "invalidHandler"
+		}
+	},
+	"handlers": {
+		"validHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "INFO"
+		},
+		"invalidHandler": {
+			"type": "ConsoleHandler"
+		}
+	}
+}

@@ -86,27 +86,30 @@ describe.each<LogEvent>(
 		});
 
 		test("Log message is in logged line", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			expect(consoleSpy.mock.calls[0][0]).toContain(logEvent.message);
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining(logEvent.message)
+			);
 		});
 
 		test("Log severity is in logged line", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			expect(consoleSpy.mock.calls[0][0]).toContain(logEvent.level.toString());
+			expect(consoleSpy).toHaveBeenCalledWith(
+				expect.stringContaining(logEvent.level.toString())
+			);
 		});
 
 		if (useColors) {
 			test("ANSI reset is in logged line", () => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				expect(consoleSpy.mock.calls[0][0]).toContain(ANSI_RESET);
+				expect(consoleSpy).toHaveBeenCalledWith(
+					expect.stringContaining(ANSI_RESET)
+				);
 			});
 		}
 
 		if (logEvent.data) {
 			test("Extra data is in logged line", () => {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				expect(consoleSpy.mock.calls[0][0]).toContain(
-					JSON.stringify(logEvent.data)
+				expect(consoleSpy).toHaveBeenCalledWith(
+					expect.stringContaining(JSON.stringify(logEvent.data))
 				);
 			});
 		}
@@ -132,25 +135,35 @@ describe.each<LogEvent>(
 		});
 
 		test("Log file is correct", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			expect(fsSpy.mock.calls[0][0]).toBe("/tmp/file.log");
+			expect(fsSpy).toHaveBeenCalledWith(
+				"/tmp/file.log",
+				expect.anything(), // Message (parts) are covered in other tests
+				expect.anything() // The () => {} anonymous function
+			);
 		});
 
 		test("Log message is in logged line", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			expect(fsSpy.mock.calls[0][1]).toContain(logEvent.message);
+			expect(fsSpy).toHaveBeenCalledWith(
+				"/tmp/file.log",
+				expect.stringContaining(logEvent.message),
+				expect.anything() // The () => {} anonymous function
+			);
 		});
 
 		test("Log severity is in logged line", () => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			expect(fsSpy.mock.calls[0][1]).toContain(logEvent.level.toString());
+			expect(fsSpy).toHaveBeenCalledWith(
+				"/tmp/file.log",
+				expect.stringContaining(logEvent.level.toString()),
+				expect.anything() // The () => {} anonymous function
+			);
 		});
 
 		if (logEvent.data) {
 			test("Extra data is in logged line", () => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				expect(fsSpy.mock.calls[0][1]).toContain(
-					JSON.stringify(logEvent.data)
+				expect(fsSpy).toHaveBeenCalledWith(
+					"/tmp/file.log",
+					expect.stringContaining(JSON.stringify(logEvent.data)),
+					expect.anything() // The () => {} anonymous function
 				);
 			});
 		}

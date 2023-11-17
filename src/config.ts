@@ -31,4 +31,5 @@ export interface LoggerConfiguration {
 export interface LoggingConfiguration {
 	loggers: LoggerConfiguration[];
 	handlers: HandlerConfiguration[];
+	hasErrors: boolean;
 }

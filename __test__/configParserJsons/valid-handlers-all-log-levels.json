@@ -1,0 +1,33 @@
+{
+	"loggers": {
+		"root": {
+			"handlers": ["traceHandler", "debugHandler", "infoHandler", "warnHandler", "errorHandler", "fatalHandler"]
+		}
+	},
+	"handlers": {
+		"traceHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "TRACE"
+		},
+		"debugHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "DEBUG"
+		},
+		"infoHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "INFO"
+		},
+		"warnHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "WARN"
+		},
+		"errorHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "ERROR"
+		},
+		"fatalHandler": {
+			"type": "ConsoleHandler",
+			"logLevel": "FATAL"
+		}
+	}
+}

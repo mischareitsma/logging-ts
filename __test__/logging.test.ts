@@ -31,7 +31,6 @@ describe.each([
 	});
 });
 
-// FIXME: Stop skipping when fixing the message issue
 describe.each([
 	{level: LogLevel.TRACE},
 	{level: LogLevel.DEBUG},

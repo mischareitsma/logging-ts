@@ -1,0 +1,8 @@
+{
+	"handlers": {
+		"someHandlerThatLogsAll": {
+			"type": "ConsoleHandler",
+			"logLevel": "ALLTHELEVELS"
+		}
+	}
+}
