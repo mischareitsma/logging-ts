@@ -8,6 +8,8 @@ import { EventEmitter } from "node:events";
 
 export type LogDataContainer = {[id: string]: string};
 
+type logLevelName = "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+
 /**
  * Log levels.
  * 
@@ -38,6 +40,23 @@ export class LogLevel {
 
 	public valueOf(): number {
 		return this.severity;
+	}
+
+	public static getLogLevelFromName(name: logLevelName): LogLevel {
+		switch(name) {
+			case "TRACE":
+				return LogLevel.TRACE;
+			case "DEBUG":
+				return LogLevel.DEBUG;
+			case "INFO":
+				return LogLevel.INFO;
+			case "WARN":
+				return LogLevel.WARN;
+			case "ERROR":
+				return LogLevel.ERROR;
+			case "FATAL":
+				return LogLevel.FATAL;
+		}
 	}
 }
 

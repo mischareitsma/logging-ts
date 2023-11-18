@@ -17,6 +17,7 @@ import {
 	LoggerConfiguration,
 	LoggingConfiguration
 } from "../src/config";
+import { LogLevel } from "../src/logging";
 
 function jsonConfigPath(jsonName: string) {
 	return `${__dirname}/configParserJsons/${jsonName}.json`;
@@ -28,9 +29,7 @@ function assertConsoleError(spy: jest.SpyInstance, loggers: string[], handlers: 
 		`loggers: [${loggers.toString()}]`;
 
 	expect(spy).toHaveBeenCalledTimes(1);
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	expect(spy.mock.calls[0][0]).toBe(expectedError);
+	expect(spy).toHaveBeenCalledWith(expectedError);
 }
 
 interface InvalidTestInput {
@@ -132,6 +131,10 @@ describe.each<InvalidTestInput>([
 	test("Should generate error message", () => {
 		assertConsoleError(spy, testInput.invalidLoggers, testInput.invalidHandlers);
 	});
+
+	test("Should have error flag set to true", () => {
+		expect(config.hasErrors).toBe(true);
+	});
 });
 
 /**
@@ -173,6 +176,10 @@ describe("Loading configuration with a valid and complete JSON", () => {
 		jsonConfigPath("valid-complete")
 	);
 
+	test("Should have no errors", () => {
+		expect(config.hasErrors).toBe(false);
+	});
+
 	describe("Should have the root logger", () => {
 		const rootLogger: LoggerConfiguration = getLoggerByName(config, "root");
 	
@@ -204,7 +211,7 @@ describe("Loading configuration with a valid and complete JSON", () => {
 		expect(handler1).toBeDefined();
 
 		test("Should have correct properties", () => {
-			expect(handler1.logLevel).toBe("TRACE");
+			expect(handler1.logLevel).toBe(LogLevel.TRACE);
 			expect(handler1.type).toBe("ConsoleHandler");
 			// Previous expect makes sure this is a ConsoleHandlerConfiguration.
 			expect((handler1 as ConsoleHandlerConfiguration).useColors).toBe(true);
@@ -217,7 +224,7 @@ describe("Loading configuration with a valid and complete JSON", () => {
 		expect(handler2).toBeDefined();
 
 		test("Should have correct properties", () => {
-			expect(handler2.logLevel).toBe("WARN");
+			expect(handler2.logLevel).toBe(LogLevel.WARN);
 			expect(handler2.type).toBe("FileHandler");
 			// Previous expect makes sure this is a FileHandlerConfiguration.
 			expect((handler2 as FileHandlerConfiguration).logFile)
@@ -231,12 +238,16 @@ describe("Loading config with the console handler without optionals", () => {
 		jsonConfigPath("valid-handler-console-without-optionals")
 	);
 
+	test("Should have no errors", () => {
+		expect(config.hasErrors).toBe(false);
+	});
+
 	const handler: HandlerConfiguration = getHandlerByName(config, "consoleHandler");
 
 	expect(handler).toBeDefined();
 
 	test("Should have correct properties", () => {
-		expect(handler.logLevel).toBe("INFO");
+		expect(handler.logLevel).toBe(LogLevel.INFO);
 		expect(handler.type).toBe("ConsoleHandler");
 		expect((handler as ConsoleHandlerConfiguration).useColors).toBeFalsy();
 	});
@@ -247,15 +258,22 @@ describe("Loading config with a handlers per severity", () => {
 		jsonConfigPath("valid-handlers-all-log-levels")
 	);
 
+	test("Should have no errors", () => {
+		expect(config.hasErrors).toBe(false);
+	});
+
 	const logger: LoggerConfiguration = getLoggerByName(config, "root");
 
 	expect(logger).toBeDefined();
 
-	describe.each<string>(
-		["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
-	)("For level %s", (logLevel) => {
-		const handlerName = `${logLevel.toLowerCase()}Handler`;
-
+	describe.each<{handlerName: string; logLevel: LogLevel}>([
+		{ handlerName: "traceHandler", logLevel: LogLevel.TRACE },
+		{ handlerName: "debugHandler", logLevel: LogLevel.DEBUG },
+		{ handlerName: "infoHandler", logLevel: LogLevel.INFO },
+		{ handlerName: "warnHandler", logLevel: LogLevel.WARN },
+		{ handlerName: "errorHandler", logLevel: LogLevel.ERROR },
+		{ handlerName: "fatalHandler", logLevel: LogLevel.FATAL },
+	])("For level %s", ({handlerName, logLevel}) => {
 		const handler: HandlerConfiguration = getHandlerByName(config, handlerName);
 
 		expect(handler).toBeDefined();
@@ -275,6 +293,10 @@ describe("Loading config with only valid handlers", () => {
 		jsonConfigPath("valid-handlers-only")
 	);
 
+	test("Should have no errors", () => {
+		expect(config.hasErrors).toBe(false);
+	});
+
 	test.each<string>(["handler1", "handler2"])("Loaded handler %s", (handlerName) => {
 		expect(getHandlerByName(config, handlerName)).toBeDefined();
 	});
@@ -285,7 +307,73 @@ describe("Loading config with only valid loggers", () => {
 		jsonConfigPath("valid-loggers-only")
 	);
 
+	test("Should have no errors", () => {
+		expect(config.hasErrors).toBe(false);
+	});
+
 	test.each<string>(["root", "app"])("Loaded logger %s", (loggerName) => {
 		expect(getLoggerByName(config, loggerName)).toBeDefined();
 	});
+});
+
+type emptyConfigTestInput = {
+	path: string,
+	hasErrors: boolean,
+	errorMessage?: string
+};
+
+describe.each<emptyConfigTestInput>([
+	{
+		path: "/some/file/that/does/not/exist.json",
+		hasErrors: true,
+		errorMessage: "Could not parse entire configuration: Error: ENOENT: " +
+			"no such file or directory, stat '/some/file/that/does/not/exist.json'"
+	},
+	{
+		path: jsonConfigPath("empty-file"),
+		hasErrors: true,
+		errorMessage: "Could not parse entire configuration: SyntaxError: Unexpected end " +
+			"of JSON input"
+	},
+	{
+		path: jsonConfigPath("empty-config"),
+		hasErrors: false,
+	}
+])("Loading configuration file %s", (testInput: emptyConfigTestInput) => {
+
+	let spy: jest.SpyInstance;
+	let config: LoggingConfiguration;
+
+	beforeAll(() => {
+		spy = jest.spyOn(console, "error").mockImplementation(() => {});
+		config = loadLoggingConfiguration(testInput.path);
+	});
+
+	afterAll(() => {
+		spy.mockRestore();
+	});
+
+	test("Should have expected value of hasErrors", () => {
+		expect(config.hasErrors).toBe(testInput.hasErrors);
+	});
+
+	test("Should have no loggers", () => {
+		expect(config.loggers.length).toBe(0);
+	});
+
+	test("Should have no handlers", () => {
+		expect(config.handlers.length).toBe(0);
+	});
+
+	if (testInput.errorMessage) {
+		test("Error message written to stderr in case of expected errors", () => {
+			expect(spy).toBeCalledTimes(1);
+			expect(spy).toHaveBeenCalledWith(testInput.errorMessage);
+		});
+	}
+	else {
+		test("No error message written to stderr", () => {
+			expect(spy).not.toHaveBeenCalled();
+		});
+	}
 });

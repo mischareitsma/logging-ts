@@ -7,7 +7,7 @@
 import * as fs from "node:fs";
 
 import { LOGGING_CONFIG_VAR, LoggingConfiguration } from "./config";
-import { allLogLevels } from "./logging";
+import { allLogLevels, LogLevel } from "./logging";
 
 /**
  * The **loadLoggingConfiguration** function loads and returns the logging configuration from
@@ -30,17 +30,14 @@ import { allLogLevels } from "./logging";
  * @returns LoggingConfiguration with loggers and handlers loaded from a configuration file, or
  *          with empty loggers and handlers arrays.
  */
-export function loadLoggingConfiguration(configLocation?: string): LoggingConfiguration {
-	if (!configLocation) configLocation = process.env[LOGGING_CONFIG_VAR];
-
+export function loadLoggingConfiguration(configLocation: string): LoggingConfiguration {
 	const configuration: LoggingConfiguration = {loggers: [], handlers: [], hasErrors: false};
-
-	if (!configLocation || !fs.statSync(configLocation).isFile())
-		return configuration;
-
-	try {
-		const json: any = JSON.parse(fs.readFileSync(configLocation, {encoding: "utf-8"}));
 	
+	try {
+		if (!configLocation || !fs.statSync(configLocation, {}).isFile())
+			return configuration;
+
+			const json: any = JSON.parse(fs.readFileSync(configLocation, {encoding: "utf-8"}));
 		if (typeof json !== "object") return configuration;
 	
 		const invalidHandlers: string[] = [];
@@ -53,7 +50,10 @@ export function loadLoggingConfiguration(configLocation?: string): LoggingConfig
 				if (isValidHandlerConfig(json.handlers[handlerName])) {
 					configuration.handlers.push({
 						...json.handlers[handlerName],
-						name: handlerName
+						name: handlerName,
+						logLevel: LogLevel.getLogLevelFromName(
+							json.handlers[handlerName].logLevel
+						)
 					});
 					validHandlers.push(handlerName);
 				}

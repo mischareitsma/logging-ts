@@ -82,19 +82,19 @@ export class FileHandler implements LogHandler {
 	
 }
 
-export function getNewLogHandler(handlerOptions: HandlerConfiguration): LogHandler {
-	switch (handlerOptions.type) {
+export function getNewLogHandler(handlerConfiguration: HandlerConfiguration): LogHandler {
+	switch (handlerConfiguration.type) {
 		case "FileHandler":
 			return new FileHandler(
-				handlerOptions.logLevel,
-				handlerOptions.logFile,
-				handlerOptions.name
+				handlerConfiguration.logLevel,
+				handlerConfiguration.logFile,
+				handlerConfiguration.name
 			);
 		case "ConsoleHandler":
 			return new ConsoleHandler(
-				handlerOptions.logLevel,
-				handlerOptions.useColors,
-				handlerOptions.name
+				handlerConfiguration.logLevel,
+				handlerConfiguration.useColors,
+				handlerConfiguration.name
 			);
 	}
 }
