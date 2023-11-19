@@ -419,9 +419,5 @@ export function addLogger(logger: Logger) {
 }
 
 export function getLogger(name?: string) {
-	// TODO: (Mischa Reitsma) Could set a 'display name', so we can reuse the root logger but use a different name in the logs. But then we might as well just only have one logger.
 	return loggers.get(!name || !loggers.has(name) ? "root" : name);
 }
-
-/* Section: Few handlers.
-*/

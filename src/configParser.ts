@@ -4,9 +4,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/** Isolated log configuration parsing module.
+ * 
+ * This module contains the logging configuration parser. As this thing is validating the config,
+ * and too complex types are hard to understand, it treats the result of **JSON.parse()** as an
+ * **any** type.
+ */
 import * as fs from "node:fs";
 
-import { LOGGING_CONFIG_VAR, LoggingConfiguration } from "./config";
+import { LoggingConfiguration } from "./config";
 import { allLogLevels, LogLevel } from "./logging";
 
 /**
@@ -14,7 +20,7 @@ import { allLogLevels, LogLevel } from "./logging";
  * a configuration file.
  * 
  * If the **configLocation** parameter is not passed the logging configuration environment variable
- * is used. The name of the environment variable is stored in the {@link LOGGING_CONFIG_VAR}
+ * is used. The name of the environment variable is stored in the **LOGGING_CONFIGURATION_PATH**
  * variable. If both are undefined or the logging configuration file does not exist the function
  * returns an LoggingConfiguration with empty arrays for both loggers and handlers.
  * 
@@ -37,7 +43,8 @@ export function loadLoggingConfiguration(configLocation: string): LoggingConfigu
 		if (!configLocation || !fs.statSync(configLocation, {}).isFile())
 			return configuration;
 
-			const json: any = JSON.parse(fs.readFileSync(configLocation, {encoding: "utf-8"}));
+		const json: any = JSON.parse(fs.readFileSync(configLocation, {encoding: "utf-8"}));
+
 		if (typeof json !== "object") return configuration;
 	
 		const invalidHandlers: string[] = [];
@@ -168,7 +175,8 @@ function isValidHandlerConfig(config: any): boolean {
 	return true;
 }
 
-// TODO: If we make the validator an object it is easier to inject extra handlers and validations on those handlers
+
+// TODO: (Mischa Reitsma) If we make the validator an object it is easier to inject extra handlers and validations on those handlers
 function allFieldsAreValid(config: any): boolean {
 	return fieldsAreValid(config, handlerConfigFields.all);
 }

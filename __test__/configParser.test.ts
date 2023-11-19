@@ -20,7 +20,7 @@ import {
 import { LogLevel } from "../src/logging";
 
 function jsonConfigPath(jsonName: string) {
-	return `${__dirname}/configParserJsons/${jsonName}.json`;
+	return `${__dirname}/testLoggingConfigurations/${jsonName}.json`;
 }
 
 function assertConsoleError(spy: jest.SpyInstance, loggers: string[], handlers: string[]) {
