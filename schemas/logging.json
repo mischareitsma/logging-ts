@@ -1,0 +1,17 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://github.com/mischareitsma/logging-ts/blob/main/schemas/logging.json",
+	"title": "Logging configuration",
+	"description": "Configuration for loggers and handlers used for logging",
+	"type": "object",
+	"properties": {
+		"loggers": {
+			"type": "array",
+			"items": {"$ref": "./logger.json"}
+		},
+		"handlers": {
+			"type": "array",
+			"items": {"$ref": "./handler.json"}
+		}
+	}
+}

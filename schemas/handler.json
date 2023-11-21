@@ -1,0 +1,32 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://github.com/mischareitsma/logging-ts/blob/main/schemas/handler.json",
+	"title": "Handler",
+	"description": "Configuration for a log event handler instance",
+	"type": "object",
+	"properties": {
+		"name": {
+			"description": "Name of the handler",
+			"type": "string"
+		},
+		"type": {
+			"description": "Type of the handler",
+			"type": "string",
+			"$comment": "As users can define their own handlers, the schema does use an enum of ConsoleHandler and FileHandler."
+		},
+		"logLevel": {
+			"description": "Level of log events that the handler handles",
+			"type": "string",
+			"enum": ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
+		},
+		"useColors": {
+			"description": "(ConsoleHandler) Use ANSI escape codes for colors.",
+			"type": "boolean"
+		},
+		"logFile": {
+			"description": "(FileHandler) Log file location.",
+			"type": "string"
+		}
+	},
+	"required": ["name", "type", "logLevel"]
+}
