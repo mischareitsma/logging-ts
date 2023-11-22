@@ -1,14 +1,16 @@
 {
-	"handlers": {
-		"handler1": {
+	"handlers": [
+		{
+			"name": "handler1",
 			"type": "ConsoleHandler",
 			"useColors": true,
 			"logLevel": "TRACE"
 		},
-		"handler2": {
+		{
+			"name": "handler2",
 			"type": "FileHandler",
 			"logFile": "/var/log/some-file.log",
 			"logLevel": "WARN"
 		}
-	}
+	]
 }

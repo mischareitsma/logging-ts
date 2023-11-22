@@ -47,41 +47,49 @@ export function loadLoggingConfiguration(configLocation: string): LoggingConfigu
 
 		if (typeof json !== "object") return configuration;
 	
-		const invalidHandlers: string[] = [];
-		const invalidLoggers: string[] = [];
-
 		const validHandlers: string[] = [];
+		const invalidHandlers: string[] = [];
 
 		if ("handlers" in json) {
-			for (const handlerName in json.handlers) {
-				if (isValidHandlerConfig(json.handlers[handlerName])) {
+			for (const handler of json.handlers) {
+				const handlerName: string | undefined = handler["name"];
+				if (isValidHandlerConfig(handler)) {
 					configuration.handlers.push({
-						...json.handlers[handlerName],
-						name: handlerName,
+						...handler,
 						logLevel: LogLevel.getLogLevelFromName(
-							json.handlers[handlerName].logLevel
+							handler.logLevel
 						)
 					});
 					validHandlers.push(handlerName);
 				}
 				else {
-					invalidHandlers.push(handlerName);
+					/* Really broken config that has no name will be lost, also
+					not logged.
+					*/
+					if (handlerName) invalidHandlers.push(handlerName);
 				}
 			}
 		}
 
+		const invalidLoggers: string[] = [];
+
 		if ("loggers" in json) {
-			for (const loggerName in json.loggers) {
-				if (isValidLoggerConfig(json.loggers[loggerName])) {
+			for (const logger of json.loggers) {
+				const loggerName: string | undefined = logger["name"];
+				if (isValidLoggerConfig(logger)) {
 					const handlers: string[] = [];
 
 					// TODO: Too much nesting. Ignore max line length because this is a monster of a module anyway for now. Should have solid test coverage to make sure all this shady and ugly code works
-					if ("handlers" in json.loggers[loggerName]) {
-						json.loggers[loggerName].handlers.forEach((handlerName: string) => {
+					if ("handlers" in logger) {
+						logger.handlers.forEach((handlerName: string) => {
 							if (validHandlers.includes(handlerName)) {
 								handlers.push(handlerName);
 							}
 							else {
+								/* Update list of invalid handlers
+								with the handler that this logger
+								tried to use, but is not configured.
+								*/
 								if (!invalidHandlers.includes(handlerName))
 									invalidHandlers.push(handlerName);
 							}
@@ -93,7 +101,7 @@ export function loadLoggingConfiguration(configLocation: string): LoggingConfigu
 					});
 				}
 				else {
-					invalidLoggers.push(loggerName);
+					if (loggerName) invalidLoggers.push(loggerName);
 				}
 			}
 		}
@@ -104,7 +112,8 @@ export function loadLoggingConfiguration(configLocation: string): LoggingConfigu
 				`invalid config for loggers: [${invalidLoggers.toString()}]`
 			);
 
-	} catch (e) {
+	}
+	catch (e) {
 		console.error(`Could not parse entire configuration: ${e}`);
 		configuration.hasErrors = true;
 	}
@@ -128,6 +137,11 @@ interface HandlerConfigurationFields {
 const handlerConfigFields: HandlerConfigurationFields = {
 	all: [
 		{
+			name: "name",
+			type: "string",
+			required: false
+		},
+		{
 			name: "type",
 			type: "string",
 			required: true,
@@ -138,11 +152,6 @@ const handlerConfigFields: HandlerConfigurationFields = {
 			type: "string",
 			required: true,
 			validValues: allLogLevels.map((logLevel) => logLevel.toString())
-		},
-		{
-			name: "name",
-			type: "string",
-			required: false
 		}
 	],
 	console: [
@@ -162,6 +171,8 @@ const handlerConfigFields: HandlerConfigurationFields = {
 };
 
 function isValidHandlerConfig(config: any): boolean {
+
+	if (typeof config !== "object") return false;
 
 	if (!allFieldsAreValid(config))
 		return false;
@@ -217,6 +228,10 @@ function isValidField(config: any, fieldInfo: FieldInfo): boolean {
 }
 
 function isValidLoggerConfig(config: any): boolean {
+	if (! ("name" in config)) return false;
+
+	if (typeof config.name !== "string") return false;
+
 	if ("handlers" in config) {
 		if (!Array.isArray(config.handlers)) return false;
 		

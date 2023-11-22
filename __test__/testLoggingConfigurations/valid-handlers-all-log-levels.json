@@ -1,33 +1,47 @@
 {
-	"loggers": {
-		"root": {
-			"handlers": ["traceHandler", "debugHandler", "infoHandler", "warnHandler", "errorHandler", "fatalHandler"]
+	"loggers": [
+		{
+			"name": "root",
+			"handlers": [
+				"traceHandler",
+				"debugHandler",
+				"infoHandler",
+				"warnHandler",
+				"errorHandler",
+				"fatalHandler"
+			]
 		}
-	},
-	"handlers": {
-		"traceHandler": {
+	],
+	"handlers": [
+		{
+			"name": "traceHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "TRACE"
 		},
-		"debugHandler": {
+		{
+			"name": "debugHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "DEBUG"
 		},
-		"infoHandler": {
+		{
+			"name": "infoHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "INFO"
 		},
-		"warnHandler": {
+		{
+			"name": "warnHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "WARN"
 		},
-		"errorHandler": {
+		{
+			"name": "errorHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "ERROR"
 		},
-		"fatalHandler": {
+		{
+			"name": "fatalHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "FATAL"
 		}
-	}
+	]
 }

@@ -1,7 +1,9 @@
 {
-	"loggers": {
-		"handlerAsStringLogger": {
+	"loggers": [
+		{
+			"name": "handlerAsStringLogger",
+			"$comment": "JSON validation fails on the next line, so should the config parser. Don't change!",
 			"handlers": "someHandler"
 		}
-	}
+	]
 }

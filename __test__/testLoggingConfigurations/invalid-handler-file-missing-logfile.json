@@ -1,8 +1,9 @@
 {
-	"handlers": {
-		"fileHandler": {
+	"handlers": [
+		{
+			"name": "fileHandler",
 			"type": "FileHandler",
 			"logLevel": "INFO"
 		}
-	}
+	]
 }

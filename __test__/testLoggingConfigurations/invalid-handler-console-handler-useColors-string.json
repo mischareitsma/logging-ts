@@ -1,9 +1,11 @@
 {
-	"handlers": {
-		"console": {
+	"handlers": [
+		{
+			"name": "console",
 			"type": "ConsoleHandler",
+			"$comment": "JSON validation fails on the next line, so should the config parser. Don't change!",
 			"useColors": "thisIsTrue!",
 			"logLevel": "INFO"
 		}
-	}
+	]
 }

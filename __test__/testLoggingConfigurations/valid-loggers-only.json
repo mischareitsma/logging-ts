@@ -1,8 +1,11 @@
 {
-	"loggers": {
-		"root": {
+	"loggers": [
+		{
+			"name": "root",
 			"handlers": []
 		},
-		"app": {}
-	}
+		{
+			"name": "app"
+		}
+	]
 }

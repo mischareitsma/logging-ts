@@ -1,0 +1,10 @@
+{
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"/__test__/testLoggingConfigurations/*.json"
+			],
+			"url": "/schemas/logging.json"
+		}
+	]
+}

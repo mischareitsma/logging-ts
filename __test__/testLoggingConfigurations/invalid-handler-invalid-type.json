@@ -1,8 +1,9 @@
 {
-	"handlers": {
-		"someUnknownHandler": {
+	"handlers": [
+		{
+			"name": "someUnknownHandler",
 			"type": "UnknownHandler",
 			"logLevel": "FATAL"
 		}
-	}
+	]
 }

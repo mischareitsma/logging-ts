@@ -1,7 +1,10 @@
 {
-	"loggers": {
-		"root": {
-			"handlers": ["unknownHandler"]
+	"loggers": [
+		{
+			"name": "root",
+			"handlers": [
+				"unknownHandler"
+			]
 		}
-	}
+	]
 }

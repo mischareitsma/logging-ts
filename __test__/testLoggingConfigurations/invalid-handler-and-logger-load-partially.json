@@ -1,19 +1,26 @@
 {
-	"loggers": {
-		"root": {
-			"handlers": ["validHandler"]
+	"loggers": [
+		{
+			"name": "root",
+			"handlers": [
+				"validHandler"
+			]
 		},
-		"invalidLogger": {
+		{
+			"name": "invalidLogger",
+			"$comment": "JSON validation fails on the next line, so should the config parser. Don't change!",
 			"handlers": "invalidHandler"
 		}
-	},
-	"handlers": {
-		"validHandler": {
+	],
+	"handlers": [
+		{
+			"name": "validHandler",
 			"type": "ConsoleHandler",
 			"logLevel": "INFO"
 		},
-		"invalidHandler": {
+		{
+			"name": "invalidHandler",
 			"type": "ConsoleHandler"
 		}
-	}
+	]
 }

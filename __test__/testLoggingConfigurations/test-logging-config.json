@@ -1,20 +1,29 @@
 {
-	"loggers": {
-		"logger1": {
-			"handlers": ["handler1", "handler2"]
+	"loggers": [
+		{
+			"name": "logger1",
+			"handlers": [
+				"handler1",
+				"handler2"
+			]
 		},
-		"logger2": {
-			"handlers": ["handler2"]
+		{
+			"name": "logger2",
+			"handlers": [
+				"handler2"
+			]
 		}
-	},
-	"handlers": {
-		"handler1": {
+	],
+	"handlers": [
+		{
+			"name": "handler1",
 			"type": "ConsoleHandler",
 			"logLevel": "INFO"
 		},
-		"handler2": {
+		{
+			"name": "handler2",
 			"type": "ConsoleHandler",
 			"logLevel": "ERROR"
 		}
-	}
+	]
 }
