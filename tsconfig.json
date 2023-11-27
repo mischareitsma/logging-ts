@@ -11,7 +11,7 @@
 			"dom"
 		],
 		"inlineSourceMap": true,
-		"rootDirs": ["src", "__test__"],
+		"rootDirs": ["src", "test"],
 		"alwaysStrict": true,
 		"noImplicitThis": true,
 		"forceConsistentCasingInFileNames": true,

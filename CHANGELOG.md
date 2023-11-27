@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Moved tests from `__test__` to `test` directory.
+
 ## [0.2.0] - 2023-11-23
 
 ### Added

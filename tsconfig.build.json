@@ -12,7 +12,7 @@
 		"tmp",
 		"dist",
 		"jest.config.ts",
-		"__test__",
+		"test",
 		"build-package-json.js"
 	],
 }

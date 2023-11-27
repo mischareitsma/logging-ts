@@ -1,15 +1,16 @@
 {
   "name": "@mischareitsma/logging",
-  "description": "EventEmitter based logging module",
   "version": "0.2.0",
+  "description": "EventEmitter based logging module",
   "author": {
     "name": "Mischa Reitsma",
-    "email": "dev@mreitsma.com"
+    "email": "dev@mreitsma.com",
+    "url": "https://github.com/mischareitsma/"
   },
   "homepage": "https://github.com/mischareitsma/logging-ts#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mischareitsma/logging-ts.git"
+    "url": "git+ssh://git@github.com/mischareitsma/logging-ts.git"
   },
   "bugs": {
     "url": "https://github.com/mischareitsma/logging-ts/issues"
