@@ -73,8 +73,8 @@ export class FileHandler implements LogHandler {
 	public log(logEvent: LogEvent): void {
 		fs.appendFile(
 			this.logFilePath,
-			logEvent.date.toISOString() + " - " + logEvent.level.toString() + " - " + 
-			process.pid.toString() + " - " + logEvent.name + "  " + logEvent.message + 
+			logEvent.date.toISOString() + " - " + logEvent.level.toString() + " - " +
+			process.pid.toString() + " - " + logEvent.name + " - " + logEvent.message +
 			(logEvent.data ? " - " + JSON.stringify(logEvent.data) : "") + "\n",
 			() => {} // Ignore callback just want it async
 		);
