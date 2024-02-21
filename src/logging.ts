@@ -8,7 +8,7 @@ import { EventEmitter } from "node:events";
 
 export type LogDataContainer = {[id: string]: string};
 
-type logLevelName = "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
+export type logLevelName = "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR" | "FATAL";
 
 /**
  * Log levels.

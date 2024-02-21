@@ -1,7 +1,7 @@
 import { test, expect, describe } from "@jest/globals";
 import { Logger } from "../src/logging";
 
-const TEST_CONFIG_FILE: string = `${__dirname}/testLoggingConfigurations/test-logging-config.json`;
+const TEST_CONFIG_FILE: string = `${__dirname}/test-logging-config.json`;
 
 /* Just used for this test, might be a smarter way to do this?
 For now this works to not disable too much eslint stuff, although hacking around

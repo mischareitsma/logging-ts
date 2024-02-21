@@ -1,6 +1,6 @@
 {
   "name": "@mischareitsma/logging",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "EventEmitter based logging module",
   "author": {
     "name": "Mischa Reitsma",
@@ -15,7 +15,9 @@
   "bugs": {
     "url": "https://github.com/mischareitsma/logging-ts/issues"
   },
-  "keywords": ["logging"],
+  "keywords": [
+    "logging"
+  ],
   "main": "out/index.js",
   "types": "out/index.d.ts",
   "scripts": {
@@ -44,6 +46,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@mischareitsma/config-parser": "^0.1.0",
     "@types/node": "^20.9.0"
   }
 }

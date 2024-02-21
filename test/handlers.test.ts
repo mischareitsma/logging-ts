@@ -3,48 +3,8 @@ import * as fs from "node:fs";
 import { test, expect, describe } from "@jest/globals";
 
 import { ANSI_RESET } from "../src/ansi";
-import { HandlerConfiguration } from "../src/config";
-import { getNewLogHandler, ConsoleHandler, FileHandler } from "../src/handlers";
-import { LogEvent, LogHandler, LogLevel } from "../src/logging";
-
-
-describe("Getting a handler using the options interface", () => {
-	type GetNewLogHandlerTestTuple = [string, HandlerConfiguration];
-	describe.each<GetNewLogHandlerTestTuple>([
-		["ConsoleHandler", {
-			type: "ConsoleHandler",
-			logLevel: LogLevel.INFO,
-			name: "ConsoleHandlerName",
-			useColors: true
-		}],
-		["FileHandler", {
-			type: "FileHandler",
-			logLevel: LogLevel.INFO,
-			logFile: "/tmp/somLogFile.log",
-			name: "FileHandlerName"
-		}]
-	])("With the type %s", (type, options) => {
-		const handler: LogHandler = getNewLogHandler(options);
-
-		test("Should give have the correct type", () => {
-			expect(handler.constructor.name).toBe(type);
-		});
-
-		test("Should have the correct log level", () => {
-			expect(handler.logLevel).toBe(LogLevel.INFO);
-		});
-
-		test("Should have the correct name", () => {
-			expect(handler.name).toBe(type + "Name");
-		});
-
-		if (type === "ConsoleHandler") {
-			test("Should have the correct useColors", () => {
-				expect((handler as ConsoleHandler).useColors).toBe(true);
-			});
-		}
-	});
-});
+import { ConsoleHandler, FileHandler } from "../src/handlers";
+import { LogEvent, LogLevel } from "../src/logging";
 
 const infoEvent: LogEvent = {
 	level: LogLevel.INFO,

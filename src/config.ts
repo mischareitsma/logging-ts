@@ -1,40 +1,78 @@
-import { loadLoggingConfiguration } from "./configParser";
-import { getNewLogHandler } from "./handlers";
-import { LogHandler, LogLevel, Logger, addLogger } from "./logging";
+// import { loadLoggingConfiguration } from "./configParser";
+import { ConfigElementBuilder, ConfigParser, ObjectElement } from "@mischareitsma/config-parser";
+import { ConsoleHandler, FileHandler } from "./handlers";
+import { LogHandler, LogLevel, Logger, addLogger, logLevelName } from "./logging";
+
+import * as fs from "node:fs";
 
 /**
  * Environment variable that stores the location of the configuration file for loggers and handlers.
  */
-export const LOGGING_CONFIG_VAR="LOGGING_CONFIGURATION_PATH";
+const LOGGING_CONFIG_VAR="LOGGING_CONFIGURATION_PATH";
 
 interface _CommonHandlerConfiguration {
 	type: string;
-	logLevel: LogLevel;
+	logLevel: logLevelName;
 	name: string;
 }
 
-export interface ConsoleHandlerConfiguration extends _CommonHandlerConfiguration {
+interface ConsoleHandlerConfiguration extends _CommonHandlerConfiguration {
 	type: "ConsoleHandler";
 	useColors?: boolean;
 }
 
-export interface FileHandlerConfiguration extends _CommonHandlerConfiguration {
+interface FileHandlerConfiguration extends _CommonHandlerConfiguration {
 	type: "FileHandler";
 	logFile: string;
 }
 
-export type HandlerConfiguration = ConsoleHandlerConfiguration | FileHandlerConfiguration;
+type HandlerConfiguration = ConsoleHandlerConfiguration | FileHandlerConfiguration;
 
-export interface LoggerConfiguration {
+interface LoggerConfiguration {
 	name: string;
 	handlers: string[];
 }
 
-export interface LoggingConfiguration {
+interface LoggingConfiguration {
 	loggers: LoggerConfiguration[];
 	handlers: HandlerConfiguration[];
-	hasErrors: boolean;
 }
+
+const handlerConfigElement: ObjectElement = new ConfigElementBuilder()
+	.ofTypeObject()
+	.withChildElements(
+		new ConfigElementBuilder().ofTypeString().withName("type").build(),
+		new ConfigElementBuilder().ofTypeString().withName("logLevel").build(),
+		new ConfigElementBuilder().ofTypeString().withName("name").build(),
+		new ConfigElementBuilder().ofTypeBoolean().withName("useColors").isOptional()
+			.build(),
+		new ConfigElementBuilder().ofTypeString().withName("logFile").isOptional().build()
+	)
+	.build() as ObjectElement;
+
+const loggerConfigElement: ObjectElement = new ConfigElementBuilder()
+	.ofTypeObject()
+	.withChildElements(
+		new ConfigElementBuilder().ofTypeString().withName("name").build(),
+		new ConfigElementBuilder().ofTypeArray().withName("handlers")
+			.withStringArrayElements().build()
+	).build() as ObjectElement;
+
+const configParser: ConfigParser = new ConfigParser(
+	new ConfigElementBuilder().ofTypeObject().withChildElements(
+		new ConfigElementBuilder()
+			.ofTypeArray()
+			.withName("loggers")
+			.withObjectArrayElements(loggerConfigElement)
+			.build(),
+		new ConfigElementBuilder()
+			.ofTypeArray()
+			.withName("handlers")
+			.withObjectArrayElements(handlerConfigElement)
+			.build()
+	).build()
+);
+
 
 /**
  * Load all the logging configuration and create loggers and their handlers.
@@ -44,12 +82,25 @@ export interface LoggingConfiguration {
 export function loadLoggersAndHandlers(configFile?: string) {
 	if (!configFile) configFile = process.env[LOGGING_CONFIG_VAR];
 
-	const loggingConfig = loadLoggingConfiguration(configFile);
+	// const loggingConfig = loadLoggingConfiguration(configFile);
+
+	let loggingConfig: LoggingConfiguration;
+
+	try {
+		loggingConfig = configParser.parse(
+			fs.readFileSync(configFile, "utf-8")
+		) as LoggingConfiguration;
+	}
+	catch (e) {
+		console.error(`Failed to load logging configuration: ${e}`);
+	}
+
+	// TODO: (Mischa Reitsma) As all handler config is in one big object / interface, and the config parser doesn't allow conditional checking (yet ;-)), add checks here. Or just update the config parser to have conditional requires fields.
 
 	const handlers: Map<string, LogHandler> = new Map();
 
 	loggingConfig.handlers.forEach((handlerConfig) => {
-		handlers.set(handlerConfig.name, getNewLogHandler(handlerConfig));
+		handlers.set(handlerConfig.name, createHandlerFromConfig(handlerConfig));
 	});
 
 	loggingConfig.loggers.forEach((loggerConfig) => {
@@ -60,4 +111,21 @@ export function loadLoggersAndHandlers(configFile?: string) {
 
 		addLogger(logger);
 	});
+}
+
+function createHandlerFromConfig(handlerConfiguration: HandlerConfiguration): LogHandler {
+	switch (handlerConfiguration.type) {
+		case "FileHandler":
+			return new FileHandler(
+				LogLevel.getLogLevelFromName(handlerConfiguration.logLevel),
+				handlerConfiguration.logFile,
+				handlerConfiguration.name
+			);
+		case "ConsoleHandler":
+			return new ConsoleHandler(
+				LogLevel.getLogLevelFromName(handlerConfiguration.logLevel),
+				handlerConfiguration.useColors,
+				handlerConfiguration.name
+			);
+	}
 }

@@ -1,9 +1,0 @@
-{
-	"handlers": [
-		{
-			"name": "someHandlerThatLogsAll",
-			"type": "ConsoleHandler",
-			"logLevel": "ALLTHELEVELS"
-		}
-	]
-}
