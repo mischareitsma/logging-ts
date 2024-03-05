@@ -1,7 +1,10 @@
 import { test, expect, describe } from "@jest/globals";
 import { Logger } from "../src/logging";
+import { loadLoggersAndHandlers } from "../src/config";
 
 const TEST_CONFIG_FILE: string = `${__dirname}/test-logging-config.json`;
+const TEST_INVALID_FILE_HANDLER_FILE: string = `${__dirname}/test-config-invalid-file-handler.json`;
+const TEST_VALID_FILE_HANDLER_FILE: string = `${__dirname}/test-config-valid-file-handler.json`;
 
 /* Just used for this test, might be a smarter way to do this?
 For now this works to not disable too much eslint stuff, although hacking around
@@ -90,4 +93,27 @@ describe.each<boolean>([true, false])("Test loading logger with useEnv as %s", (
 			);
 		});
 	});
+});
+
+describe("Configured fileHandler", () => {
+	let stderrSpy: jest.SpyInstance;
+
+	beforeEach(() => {
+		stderrSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+	});
+
+	afterAll(() => {
+		stderrSpy.mockClear();
+	});
+
+	test("With correct config has no errors", () => {
+		loadLoggersAndHandlers(TEST_VALID_FILE_HANDLER_FILE);
+		expect(stderrSpy).not.toHaveBeenCalled();
+	});
+
+	test("With incorrect handler config has an error on stderr", () => {
+		loadLoggersAndHandlers(TEST_INVALID_FILE_HANDLER_FILE);
+		expect(stderrSpy).toHaveBeenCalled();
+	});
+
 });

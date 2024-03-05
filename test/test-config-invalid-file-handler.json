@@ -1,0 +1,17 @@
+{
+	"loggers": [
+		{
+			"name": "logger",
+			"handlers": [
+				"invalidFileHandler"
+			]
+		}
+	],
+	"handlers": [
+		{
+			"name": "invalidFileHandler",
+			"type": "FileHandler",
+			"logLevel": "INFO"
+		}
+	]
+}

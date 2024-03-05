@@ -1,5 +1,10 @@
 // import { loadLoggingConfiguration } from "./configParser";
-import { ConfigElementBuilder, ConfigParser, ObjectElement } from "@mischareitsma/config-parser";
+import {
+	ConfigElement,
+	ConfigElementBuilder,
+	ConfigParser,
+	ObjectElement
+} from "@mischareitsma/config-parser";
 import { ConsoleHandler, FileHandler } from "./handlers";
 import { LogHandler, LogLevel, Logger, addLogger, logLevelName } from "./logging";
 
@@ -48,6 +53,13 @@ const handlerConfigElement: ObjectElement = new ConfigElementBuilder()
 			.build(),
 		new ConfigElementBuilder().ofTypeString().withName("logFile").isOptional().build()
 	)
+	.withValidators(
+		{validate: (ce: ConfigElement, val: {type: string, logFile?: string}) => {
+			if (val.type === "FileHandler")
+				return "logFile" in val;
+			return true;
+		}}
+	)
 	.build() as ObjectElement;
 
 const loggerConfigElement: ObjectElement = new ConfigElementBuilder()
@@ -73,7 +85,6 @@ const configParser: ConfigParser = new ConfigParser(
 	).build()
 );
 
-
 /**
  * Load all the logging configuration and create loggers and their handlers.
  * 
@@ -93,9 +104,8 @@ export function loadLoggersAndHandlers(configFile?: string) {
 	}
 	catch (e) {
 		console.error(`Failed to load logging configuration: ${e}`);
+		return;
 	}
-
-	// TODO: (Mischa Reitsma) As all handler config is in one big object / interface, and the config parser doesn't allow conditional checking (yet ;-)), add checks here. Or just update the config parser to have conditional requires fields.
 
 	const handlers: Map<string, LogHandler> = new Map();
 
