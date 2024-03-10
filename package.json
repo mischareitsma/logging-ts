@@ -1,6 +1,6 @@
 {
   "name": "@mischareitsma/logging",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "EventEmitter based logging module",
   "author": {
     "name": "Mischa Reitsma",
