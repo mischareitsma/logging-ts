@@ -17,7 +17,7 @@ export class ConsoleHandler implements LogHandler {
 	}
 
 	log(logEvent: LogEvent): void {
-		const logMessage = logEvent.date.toISOString() + " - "
+		const logMessage = toLocalDateTime(logEvent.date) + " - "
 			+ this.getLogLevelForMessage(logEvent.level) + " - "
 			+ process.pid.toString() + " - "
 			+ logEvent.name + " - " + logEvent.message
@@ -72,11 +72,28 @@ export class FileHandler implements LogHandler {
 	public log(logEvent: LogEvent): void {
 		fs.appendFile(
 			this.logFilePath,
-			logEvent.date.toISOString() + " - " + logEvent.level.toString() + " - " +
+			toLocalDateTime(logEvent.date) + " - " + logEvent.level.toString() + " - " +
 			process.pid.toString() + " - " + logEvent.name + " - " + logEvent.message +
 			(logEvent.data ? " - " + JSON.stringify(logEvent.data) : "") + "\n",
 			() => {} // Ignore callback just want it async
 		);
 	}
-	
+}
+
+function toLocalDateTime(date: Date): string{
+	const tzo = -date.getTimezoneOffset();
+	const diff = tzo >= 0 ? "+" : "-";
+
+	const pad = (num: number) => num < 10 ? "0" : "" + num;
+
+	return (
+		date.getFullYear() +
+		"-" + pad(date.getMonth() + 1) +
+		"-" + pad(date.getDate()) +
+		"T" + pad(date.getHours()) +
+		":" + pad(date.getMinutes()) +
+		":" + pad(date.getSeconds()) +
+		diff + pad(Math.floor(Math.abs(tzo) / 60)) +
+		":" + pad(Math.abs(tzo) % 60)
+	);
 }
