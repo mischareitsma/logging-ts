@@ -32,11 +32,13 @@ describe.each<LogEvent>(
 
 		let consoleSpy: jest.SpyInstance;
 
+		let capturedArg: string;
+
 		beforeAll(() => {
 			consoleSpy = jest.spyOn(
 				console,
 				logEvent.level === LogLevel.INFO ? "log" : "error"
-			).mockImplementation(() => {});
+			).mockImplementation((args: string) => { capturedArg = args; });
 
 			handler.log(logEvent);
 		});
@@ -55,6 +57,25 @@ describe.each<LogEvent>(
 			expect(consoleSpy).toHaveBeenCalledWith(
 				expect.stringContaining(logEvent.level.toString())
 			);
+		});
+
+		test("Datetime format is correct", () => {
+			const dt: string = capturedArg.split(" - ")[0];
+
+			// Assert full length, year and length of all the other pieces.
+			expect(dt.length).toBe(25);
+
+			const date: string = dt.slice(0, 10);
+			const t: string = dt[10];
+			const time: string = dt.slice(11, 19);
+			const diff = dt[19];
+			const offset: string = dt.slice(20);
+
+			expect(date).toEqual(new Date().toISOString().slice(0, 10));
+			expect(t).toEqual("T");
+			expect(time).toMatch(/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/);
+			expect(["+", "-"]).toContain(diff);
+			expect(offset).toMatch(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/);
 		});
 
 		if (useColors) {

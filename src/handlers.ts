@@ -84,7 +84,7 @@ function toLocalDateTime(date: Date): string{
 	const tzo = -date.getTimezoneOffset();
 	const diff = tzo >= 0 ? "+" : "-";
 
-	const pad = (num: number) => num < 10 ? "0" : "" + num;
+	const pad = (num: number) => (num < 10 ? "0" : "") + num;
 
 	return (
 		date.getFullYear() +
